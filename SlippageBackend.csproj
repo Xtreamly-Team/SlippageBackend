@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <InvariantGlobalization>true</InvariantGlobalization>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.0" />
+    <PackageReference Include="MongoDB.Bson" Version="2.23.1" />
+    <PackageReference Include="MongoDB.Driver" Version="2.23.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="SlippageBackend\appsettings.Development.json" />
+    <_ContentIncludedByDefault Remove="SlippageBackend\appsettings.json" />
+    <_ContentIncludedByDefault Remove="SlippageBackend\obj\project.assets.json" />
+    <_ContentIncludedByDefault Remove="SlippageBackend\obj\project.packagespec.json" />
+    <_ContentIncludedByDefault Remove="SlippageBackend\obj\SlippageBackend.csproj.nuget.dgspec.json" />
+    <_ContentIncludedByDefault Remove="SlippageBackend\Properties\launchSettings.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Controllers\v1\" />
+  </ItemGroup>
+
+</Project>
