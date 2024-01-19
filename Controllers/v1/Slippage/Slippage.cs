@@ -30,7 +30,11 @@ namespace SlippageBackend.Controllers.v1.Slippage
                 LpVolumeUsdWeek = 0,  
             };
             var result = await _communicationService.ExecuteInference(modelInput);
-            return Ok(result);
+            return Ok(new ModelOutput()
+            {
+                Slippage = -1.5m,
+                ExecutionPrice = 2450.2m
+            });
         }
     }
 }

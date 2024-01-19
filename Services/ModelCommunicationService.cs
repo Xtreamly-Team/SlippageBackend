@@ -6,7 +6,7 @@ namespace SlippageBackend.Services;
 
 public class ModelCommunicationService ( IMongoClient  _client , IHttpClientFactory _httpClientFactory)
 {
-    public async Task<ModeOutput?> ExecuteInference(ModelInput input)
+    public async Task<ModelOutput?> ExecuteInference(ModelInput input)
     {
             var client = _httpClientFactory.CreateClient();
             client.DefaultRequestHeaders.Add("Bearer" , Consts.Consts.MODEL_KEY);
@@ -16,7 +16,7 @@ public class ModelCommunicationService ( IMongoClient  _client , IHttpClientFact
                 throw new Exception("Model server error");
             }
             var response = await result.Content.ReadAsStringAsync();
-            return System.Text.Json.JsonSerializer.Deserialize<ModeOutput>(response);
+            return System.Text.Json.JsonSerializer.Deserialize<ModelOutput>(response);
         
     } 
 }
