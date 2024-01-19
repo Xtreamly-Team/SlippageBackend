@@ -48,6 +48,7 @@ builder.Services.AddSingleton<IMongoClient>(_ =>
 builder.Services.AddHttpClient();
 builder.Services.AddSingleton<ModelCommunicationService>();
 builder.Services.AddSingleton<ModelInputAggregatorService>();
+builder.Services.AddHttpClient();
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())

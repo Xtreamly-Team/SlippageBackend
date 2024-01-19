@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SlippageBackend")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e5b5ac7b88df9a7e7e5be86c82679c8163201d8f")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+fcadddf05b1da907bc8380c310be9584017241a2")]
 [assembly: System.Reflection.AssemblyProductAttribute("SlippageBackend")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SlippageBackend")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

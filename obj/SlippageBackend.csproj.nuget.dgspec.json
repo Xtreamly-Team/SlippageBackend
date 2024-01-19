@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "/home/neo/Projects/Xtreamly/SlippageBackend/SlippageBackend.csproj": {}
+    "/home/ubuntu/SlippageBackend/SlippageBackend.csproj": {}
   },
   "projects": {
-    "/home/neo/Projects/Xtreamly/SlippageBackend/SlippageBackend.csproj": {
+    "/home/ubuntu/SlippageBackend/SlippageBackend.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/neo/Projects/Xtreamly/SlippageBackend/SlippageBackend.csproj",
+        "projectUniqueName": "/home/ubuntu/SlippageBackend/SlippageBackend.csproj",
         "projectName": "SlippageBackend",
-        "projectPath": "/home/neo/Projects/Xtreamly/SlippageBackend/SlippageBackend.csproj",
-        "packagesPath": "/home/neo/.nuget/packages/",
-        "outputPath": "/home/neo/Projects/Xtreamly/SlippageBackend/obj/",
+        "projectPath": "/home/ubuntu/SlippageBackend/SlippageBackend.csproj",
+        "packagesPath": "/home/ubuntu/.nuget/packages/",
+        "outputPath": "/home/ubuntu/SlippageBackend/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/home/neo/.nuget/NuGet/NuGet.Config"
+          "/home/ubuntu/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
