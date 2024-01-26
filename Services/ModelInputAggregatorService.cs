@@ -1,4 +1,5 @@
 using System.Text;
+using System.Text.RegularExpressions;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using Newtonsoft.Json;
@@ -78,7 +79,7 @@ public class ModelInputAggregatorService(IMongoClient _client, IHttpClientFactor
 
     public async Task<double> GetVolumeUSD(string poolAddress)
     {
-        var currentVolume = await GetCurrentVolume(poolAddress);
+        var currentVolume = await GetCurrentVolume(poolAddress) /10e5;
         return currentVolume;
     }
 
@@ -129,11 +130,11 @@ public class ModelInputAggregatorService(IMongoClient _client, IHttpClientFactor
 
     private async Task<double> GetCurrentVolume(string poolAddress)
     {
-        poolAddress = poolAddress.ToLower();
         var todayStart = new DateTimeOffset(DateTime.UtcNow.Date).ToUnixTimeMilliseconds().ToString() ;
 
         var filter = Builders<BsonDocument>.Filter.And(
-            Builders<BsonDocument>.Filter.Eq("Log.Address", poolAddress),
+            Builders<BsonDocument>.Filter.Regex(e => e["Log"]["Address"].AsString,
+                new BsonRegularExpression($".*{poolAddress}.*", "i")),
             Builders<BsonDocument>.Filter.Gte("Event.Timestamp", todayStart)
 
         );
