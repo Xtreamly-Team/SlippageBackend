@@ -16,7 +16,6 @@ public class ModelInputAggregatorService(IMongoClient _client, IHttpClientFactor
         var lpReport = _client.GetDatabase("xtreamly").GetCollection<BsonDocument>("LPInfo")
             .Find(filter)
             .Sort(sort)
-            .ToList()
             .FirstOrDefault();
         if (lpReport == null) throw new Exception("No LP info found");
         return double.Parse(lpReport["liquidity"].AsString);
@@ -29,7 +28,6 @@ public class ModelInputAggregatorService(IMongoClient _client, IHttpClientFactor
         var lpReport = _client.GetDatabase("xtreamly").GetCollection<BsonDocument>("LPInfo")
             .Find(filter)
             .Sort(sort)
-            .ToList()
             .FirstOrDefault();
         if (lpReport == null) throw new Exception("No LP info found");
         return (lpReport["ValueLockedToken0"].AsDouble);
@@ -43,7 +41,6 @@ public class ModelInputAggregatorService(IMongoClient _client, IHttpClientFactor
         var lpReport = _client.GetDatabase("xtreamly").GetCollection<BsonDocument>("LPInfo")
             .Find(filter)
             .Sort(sort)
-            .ToList()
             .FirstOrDefault();
         if (lpReport == null) throw new Exception("No LP info found");
         return (lpReport["ValueLockedToken1"].AsDouble);
@@ -56,7 +53,6 @@ public class ModelInputAggregatorService(IMongoClient _client, IHttpClientFactor
         var lpReport = _client.GetDatabase("xtreamly").GetCollection<BsonDocument>("LPInfo")
             .Find(filter)
             .Sort(sort)
-            .ToList()
             .FirstOrDefault();
         if (lpReport == null) throw new Exception("No LP info found");
         return (lpReport["totalValueLockedInTermOfToken1"].AsDouble);
@@ -70,7 +66,6 @@ public class ModelInputAggregatorService(IMongoClient _client, IHttpClientFactor
         var qpReport = _client.GetDatabase("xtreamly").GetCollection<BsonDocument>("QuotedPrice")
             .Find(filter)
             .Sort(sort)
-            .ToList()
             .FirstOrDefault();
         if (qpReport == null) throw new Exception("No LP info found");
         return double.Parse(qpReport["quotedPrice"].AsString);
