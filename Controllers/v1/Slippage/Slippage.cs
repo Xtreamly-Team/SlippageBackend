@@ -29,6 +29,7 @@ namespace SlippageBackend.Controllers.v1.Slippage
                 //LpVolumeUsdChange = (decimal)await aggregatorService.GetVolumeUSDChanged(poolAddress),  
                 //LpVolumeUsdWeek = 0,  
             };
+            //var result = await _communicationService.ExecuteInference(modelInput);
             var result = await _communicationService.ExecuteInference(modelInput);
             return Ok(result);
         }
