@@ -74,7 +74,7 @@ public class ModelInputAggregatorService(IMongoClient _client, IHttpClientFactor
 
     public async Task<double> GetVolumeUSD(string poolAddress)
     {
-        var currentVolume = await GetCurrentVolume(poolAddress) /10e5;
+        var currentVolume = await GetCurrentVolume(poolAddress) ;
         return currentVolume;
     }
 
@@ -133,7 +133,9 @@ public class ModelInputAggregatorService(IMongoClient _client, IHttpClientFactor
             Builders<BsonDocument>.Filter.Gte("Event.Timestamp", todayStart)
 
         );
-        var qpReport = _client.GetDatabase("xtreamly").GetCollection<BsonDocument>("UNISWAP_REALTIME")
+        var qpReport = _client
+            .GetDatabase("xtreamly")
+            .GetCollection<BsonDocument>("UNISWAP_REALTIME")
             .Find(filter)
             .ToList()
             .Select(doc => Math.Abs( double.Parse(doc["Event"]["amount1Pure"].AsString)))
