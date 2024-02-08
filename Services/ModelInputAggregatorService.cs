@@ -1,5 +1,4 @@
 using System.Text;
-using System.Text.RegularExpressions;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using Newtonsoft.Json;
@@ -31,7 +30,7 @@ public class ModelInputAggregatorService(IMongoClient _client, IHttpClientFactor
             .Sort(sort)
             .FirstOrDefault();
         if (lpReport == null) throw new Exception("No LP info found");
-        return (lpReport["ValueLockedToken0"].AsDouble);
+        return lpReport["ValueLockedToken0"].AsDouble;
     }
 
     public async Task<double> GetlpTvlToken1(string poolAddress)
@@ -44,7 +43,7 @@ public class ModelInputAggregatorService(IMongoClient _client, IHttpClientFactor
             .Sort(sort)
             .FirstOrDefault();
         if (lpReport == null) throw new Exception("No LP info found");
-        return (lpReport["ValueLockedToken1"].AsDouble);
+        return lpReport["ValueLockedToken1"].AsDouble;
     }
 
     public async Task<double> GetlpTvlUSD(string poolAddress)
@@ -56,7 +55,7 @@ public class ModelInputAggregatorService(IMongoClient _client, IHttpClientFactor
             .Sort(sort)
             .FirstOrDefault();
         if (lpReport == null) throw new Exception("No LP info found");
-        return (lpReport["totalValueLockedInTermOfToken1"].AsDouble);
+        return lpReport["totalValueLockedInTermOfToken1"].AsDouble;
     }
 
 
@@ -74,7 +73,7 @@ public class ModelInputAggregatorService(IMongoClient _client, IHttpClientFactor
 
     public async Task<double> GetVolumeUSD(string poolAddress)
     {
-        var currentVolume = await GetCurrentVolume(poolAddress) ;
+        var currentVolume = await GetCurrentVolume(poolAddress);
         return currentVolume;
     }
 
@@ -85,7 +84,7 @@ public class ModelInputAggregatorService(IMongoClient _client, IHttpClientFactor
         var twoDaysAgoVolume = await GetVolumeUSDForDaysAgo(poolAddress, 2);
         var part1 = currentVolume - yesterdayVolume;
         var part2 = yesterdayVolume - twoDaysAgoVolume;
-        return ((part1 - part2) / part2) * 100;
+        return (part1 - part2) / part2 * 100;
     }
 
     private async Task<double> GetVolumeUSDForDaysAgo(string poolAddress, int daysAgo)
@@ -125,23 +124,57 @@ public class ModelInputAggregatorService(IMongoClient _client, IHttpClientFactor
 
     private async Task<double> GetCurrentVolume(string poolAddress)
     {
-        var todayStart = new DateTimeOffset(DateTime.UtcNow.Date).ToUnixTimeMilliseconds().ToString() ;
+        var todayStart = new DateTimeOffset(DateTime.UtcNow.Date).ToUnixTimeMilliseconds().ToString();
 
         var filter = Builders<BsonDocument>.Filter.And(
             Builders<BsonDocument>.Filter.Regex(e => e["Log"]["Address"].AsString,
                 new BsonRegularExpression($".*{poolAddress}.*", "i")),
             Builders<BsonDocument>.Filter.Gte("Event.Timestamp", todayStart)
-
         );
         var qpReport = _client
             .GetDatabase("xtreamly")
             .GetCollection<BsonDocument>("UNISWAP_REALTIME")
             .Find(filter)
             .ToList()
-            .Select(doc => Math.Abs( double.Parse(doc["Event"]["amount1Pure"].AsString)))
+            .Select(doc => Math.Abs(double.Parse(doc["Event"]["amount1Pure"].AsString)))
             .Sum();
 
-        return  qpReport;
+        return qpReport;
+    }
 
+
+    public async Task<OHLCVResult> CalculateOHLCVAsync(DateTime start_time, DateTime end_time)
+    {
+        var collection = _client.GetDatabase("xtreamly").GetCollection<BsonDocument>("Test_CEX_Raw_Trade");
+
+        var filter = Builders<BsonDocument>.Filter.And(
+            Builders<BsonDocument>.Filter.Gte("timestamp", start_time),
+            Builders<BsonDocument>.Filter.Lt("timestamp", end_time)
+        );
+
+        var trades = await collection.Find(filter).ToListAsync();
+
+        double? open_price = null;
+        var high_price = double.NegativeInfinity;
+        var low_price = double.PositiveInfinity;
+        double? close_price = null;
+        double total_volume = 0;
+
+        foreach (var trade in trades)
+        {
+            var price = trade["price"].ToDouble();
+            var amount = trade["amount"].ToDouble();
+
+            open_price ??= price;
+
+            if (price > high_price) high_price = price;
+
+            if (price < low_price) low_price = price;
+
+            close_price = price;
+            total_volume += amount;
+        }
+
+        return new OHLCVResult(open_price, high_price, low_price, close_price, total_volume);
     }
 }
