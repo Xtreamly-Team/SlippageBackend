@@ -143,8 +143,11 @@ public class ModelInputAggregatorService(IMongoClient _client, IHttpClientFactor
     }
 
 
-    public async Task<OHLCVResult> CalculateOHLCVAsync(DateTime start_time, DateTime end_time)
+    public async Task<OHLCVResult> GetOHLCVAsync()
     {
+        // it is 14 seconds behind the current utc
+        var start_time =  new DateTimeOffset( DateTime.UtcNow.AddSeconds(-14)).ToUnixTimeMilliseconds();
+        var end_time = new DateTimeOffset(DateTime.UtcNow).ToUnixTimeMilliseconds();
         var collection = _client.GetDatabase("xtreamly").GetCollection<BsonDocument>("Test_CEX_Raw_Trade");
 
         var filter = Builders<BsonDocument>.Filter.And(

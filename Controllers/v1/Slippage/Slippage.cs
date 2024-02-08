@@ -14,6 +14,8 @@ namespace SlippageBackend.Controllers.v1.Slippage
         [HttpGet]
         public async  Task<IActionResult> CalculateSlippage([FromQuery] decimal amountIn, [FromQuery] long gasPrice , [FromQuery] bool isBuy , [FromQuery] string poolAddress, [FromQuery] int feeTier)
         {
+            
+            var cexData = await aggregatorService.GetOHLCVAsync();
             var modelInput = new ModelInput()
             {
                 AmountIn = amountIn,
