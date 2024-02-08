@@ -107,9 +107,12 @@ public class ModelInputAggregatorService(IMongoClient _client, IHttpClientFactor
         var start_time =  new DateTimeOffset( DateTime.UtcNow.AddSeconds(-14)).ToUnixTimeMilliseconds();
 
         var collection = _client.GetDatabase("xtreamly").GetCollection<BsonDocument>("CEX_Raw_Trade");
-        var filter = Builders<BsonDocument>.Filter.Gt("timestamp", start_time);
+        
+        var timestampFilter = Builders<BsonDocument>.Filter.Gt("timestamp", start_time);
+        var symbolFilter = Builders<BsonDocument>.Filter.Eq("symbol", "ETH/USDT");
+        var combinedFilter = Builders<BsonDocument>.Filter.And(timestampFilter, symbolFilter);
 
-        var trades = await collection.Find(filter).ToListAsync();
+        var trades = await collection.Find(combinedFilter).ToListAsync();
         //var trades =  await  collection.AsQueryable().Where(doc => doc["timestamp"].AsInt64 > start_time).ToListAsync();
         decimal? open_price = null;
         var high_price = decimal.MinValue;
