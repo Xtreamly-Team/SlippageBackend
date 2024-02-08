@@ -27,12 +27,13 @@ namespace SlippageBackend.Controllers.v1.Slippage
                 LpTvlToken0 = (decimal)await aggregatorService.GetlpTvlToken0(poolAddress),
                 LpTvlToken1 = (decimal)await aggregatorService.GetlpTvlToken1(poolAddress),
                 LpTvlUsd = (decimal)await aggregatorService.GetlpTvlUSD(poolAddress),
-                LpVolumeUsd = (decimal) await aggregatorService.GetVolumeUSD(poolAddress)
-                 //LpVolumeUsd = (decimal)await aggregatorService.GetVolumeUSD(poolAddress),
-                //LpVolumeUsdChange = (decimal)await aggregatorService.GetVolumeUSDChanged(poolAddress),  
-                //LpVolumeUsdWeek = 0,  
+                LpVolumeUsd = (decimal) await aggregatorService.GetVolumeUSD(poolAddress),
+                Close14s =cexData.Close,
+                High14s = cexData.High,
+                Low14s = cexData.Low,
+                Open14S = cexData.Open,
+                Volume14s = cexData.Volume
             };
-            //var result = await _communicationService.ExecuteInference(modelInput);
             var result = await _communicationService.ExecuteInference(modelInput);
             return Ok(result);
         }

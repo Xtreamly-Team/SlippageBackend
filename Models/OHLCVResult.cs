@@ -1,13 +1,13 @@
 namespace SlippageBackend.Models;
 public class OHLCVResult
 {
-    public double? Open { get; set; }
-    public double High { get; set; }
-    public double Low { get; set; }
-    public double? Close { get; set; }
-    public double Volume { get; set; }
+    public decimal Open { get; set; }
+    public decimal High { get; set; }
+    public decimal Low { get; set; }
+    public decimal Close { get; set; }
+    public decimal Volume { get; set; }
 
-    public OHLCVResult(double? open, double high, double low, double? close, double volume)
+    public OHLCVResult(decimal open, decimal high, decimal low, decimal close, decimal volume)
     {
         Open = open;
         High = high;
