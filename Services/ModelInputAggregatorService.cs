@@ -114,7 +114,7 @@ public class ModelInputAggregatorService(IMongoClient _client, IHttpClientFactor
         decimal? open_price = null;
         var high_price = decimal.MinValue;
         var low_price = decimal.MaxValue;
-        decimal close_price = decimal.MaxValue;
+        decimal close_price = 0;
         decimal total_volume = 0;
 
         foreach (var trade in trades)
@@ -131,7 +131,8 @@ public class ModelInputAggregatorService(IMongoClient _client, IHttpClientFactor
             close_price = price;
             total_volume += amount;
         }
-
+        // log these to console
+        Console.WriteLine($"Open: {open_price}, High: {high_price}, Low: {low_price}, Close: {close_price}, Volume: {total_volume}");
         return new OHLCVResult(open_price.Value, high_price, low_price, close_price, total_volume);
     }
 }
