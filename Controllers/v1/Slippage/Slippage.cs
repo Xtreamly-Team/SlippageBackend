@@ -16,6 +16,7 @@ namespace SlippageBackend.Controllers.v1.Slippage
         {
             
             var cexData = await aggregatorService.GetOHLCVAsync();
+            var quotedPrice = (decimal)await aggregatorService.GetQuotedPrice(poolAddress);
             var modelInput = new ModelInput()
             {
                 AmountIn = amountIn,
@@ -35,6 +36,7 @@ namespace SlippageBackend.Controllers.v1.Slippage
                 Volume14s = cexData.Volume
             };
             var result = await _communicationService.ExecuteInference(modelInput);
+            result!.Slippage = ( result.ExecutionPrice) / quotedPrice;
             return Ok(result);
         }
     }
