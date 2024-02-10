@@ -9,7 +9,7 @@ using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace SlippageBackend.Services;
 
-public class ModelInputAggregatorService(IMongoClient _client, IHttpClientFactory _clientFactory)
+public class ModelInputAggregatorService(IMongoClient _client, IHttpClientFactory _clientFactory, ILogger<ModelInputAggregatorService> logger)
 {
     public async Task<double> GetLiquidity(string poolAddress)
     {
@@ -83,16 +83,31 @@ public class ModelInputAggregatorService(IMongoClient _client, IHttpClientFactor
     private async Task<double> GetCurrentVolume(string poolAddress)
     {
         var todayStart = new DateTimeOffset(DateTime.UtcNow.Date).ToUnixTimeMilliseconds().ToString();
-
+    
+        // Get the maximum block number
+        var maxBlockNumber = _client
+            .GetDatabase("xtreamly")
+            .GetCollection<BsonDocument>("UNISWAP_REALTIME")
+            .Find(Builders<BsonDocument>.Filter.Empty)
+            .Sort(Builders<BsonDocument>.Sort.Descending("Event.blockNumber"))
+            .Limit(1)
+            .FirstOrDefault()?["Event"]["blockNumber"].AsInt64 ?? 0;
+    
+        // Calculate the range for block numbers
+        var startBlockNumber = Math.Max(0, maxBlockNumber - 50);
+    
         var filter = Builders<BsonDocument>.Filter.And(
             Builders<BsonDocument>.Filter.Regex(e => e["Log"]["Address"].AsString,
                 new BsonRegularExpression($".*{poolAddress}.*", "i")),
-            Builders<BsonDocument>.Filter.Gte("Event.Timestamp", todayStart)
+            Builders<BsonDocument>.Filter.Gte("Event.blockNumber", startBlockNumber),
+            Builders<BsonDocument>.Filter.Lte("Event.blockNumber", maxBlockNumber)
         );
+    
         var qpReport = _client
             .GetDatabase("xtreamly")
             .GetCollection<BsonDocument>("UNISWAP_REALTIME")
             .Find(filter)
+            .Sort(Builders<BsonDocument>.Sort.Ascending("Event.blockNumber"))
             .ToList()
             .Select(doc => Math.Abs(double.Parse(doc["Event"]["amount1Pure"].AsString)))
             .Sum();
@@ -113,7 +128,6 @@ public class ModelInputAggregatorService(IMongoClient _client, IHttpClientFactor
         var combinedFilter = Builders<BsonDocument>.Filter.And(timestampFilter, symbolFilter);
 
         var trades = await collection.Find(combinedFilter).ToListAsync();
-        //var trades =  await  collection.AsQueryable().Where(doc => doc["timestamp"].AsInt64 > start_time).ToListAsync();
         decimal? open_price = null;
         var high_price = decimal.MinValue;
         var low_price = decimal.MaxValue;
@@ -134,8 +148,8 @@ public class ModelInputAggregatorService(IMongoClient _client, IHttpClientFactor
             close_price = price;
             total_volume += amount;
         }
-        // log these to console
-        Console.WriteLine($"Open: {open_price}, High: {high_price}, Low: {low_price}, Close: {close_price}, Volume: {total_volume}");
+        // log these to logger
+        logger.LogInformation($"Open: {open_price}, High: {high_price}, Low: {low_price}, Close: {close_price}, Volume: {total_volume}");
         return new OHLCVResult(open_price.Value, high_price, low_price, close_price, total_volume);
     }
 }
