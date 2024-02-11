@@ -36,7 +36,7 @@ namespace SlippageBackend.Controllers.v1.Slippage
                 Volume14s = cexData.Volume
             };
             var result = await _communicationService.ExecuteInference(modelInput);
-            result!.Slippage = ( result.ExecutionPrice) / quotedPrice;
+            result!.Slippage = ((( result.ExecutionPrice) / quotedPrice ) -1 ) * 100;
             return Ok(result);
         }
     }
