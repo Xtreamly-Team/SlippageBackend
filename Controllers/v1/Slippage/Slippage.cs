@@ -28,7 +28,7 @@ namespace SlippageBackend.Controllers.v1.Slippage
                 LpTvlToken0 = (decimal)await aggregatorService.GetlpTvlToken0(poolAddress),
                 LpTvlToken1 = (decimal)await aggregatorService.GetlpTvlToken1(poolAddress),
                 LpTvlUsd = (decimal)await aggregatorService.GetlpTvlUSD(poolAddress),
-                LpVolumeUsd = (decimal) await aggregatorService.GetVolumeUSD(poolAddress),
+                //LpVolumeUsd = (decimal) await aggregatorService.GetVolumeUSD(poolAddress),
                 Close14s =cexData.Close,
                 High14s = cexData.High,
                 Low14s = cexData.Low,
