@@ -24,8 +24,4 @@
     <_ContentIncludedByDefault Remove="SlippageBackend\Properties\launchSettings.json" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Controllers\v1\" />
-  </ItemGroup>
-
 </Project>
