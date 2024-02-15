@@ -78,15 +78,10 @@ public class ModelInputAggregatorService(IMongoClient _client, IHttpClientFactor
         logger.LogInformation("quoted price: {quotedPrice}", qpReport["quotedPrice"].AsString);
         return double.Parse(qpReport["quotedPrice"].AsString);
     }
-
-    public async Task<double> GetVolumeUSD(string poolAddress)
-    {
-        var currentVolume = await GetCurrentVolume(poolAddress);
-        return currentVolume;
-    }
+    
    
 
-    private async Task<double> GetCurrentVolume(string poolAddress)
+    public async Task<double> GetCurrentVolume(string poolAddress)
     {
         var todayStart = new DateTimeOffset(DateTime.UtcNow.Date).ToUnixTimeMilliseconds().ToString();
     
