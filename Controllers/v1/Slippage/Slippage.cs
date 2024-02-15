@@ -14,9 +14,10 @@ public class Slippage(
 {
     [HttpGet]
     public async Task<IActionResult> CalculateSlippage([FromQuery] decimal amountIn, [FromQuery] long gasPrice,
-        [FromQuery] bool isBuy, [FromQuery] string poolAddress, [FromQuery] int feeTier)
+        [FromQuery] bool isBuy, [FromQuery] string poolAddress, [FromQuery] int feeTier,  [FromQuery] string symbol)
     {
-        var cexData = await aggregatorService.GetOHLCVAsync();
+        //"ETH-USDT", "ETH-USDC"
+        var cexData = await aggregatorService.GetOHLCVAsync(symbol);
         var quotedPrice = (decimal)await aggregatorService.GetQuotedPrice(poolAddress);
         var modelInput = new ModelInput
         {
@@ -36,7 +37,7 @@ public class Slippage(
             Open14S = cexData.Open,
             Volume14s = cexData.Volume
         };
-        var result = await _communicationService.ExecuteInference(modelInput);
+        var result = await _communicationService.ExecuteInference(modelInput, symbol);
         result!.Slippage = (result.ExecutionPrice / quotedPrice - 1) * 100;
         _logger.LogInformation( System.Text.Json.JsonSerializer.Serialize(modelInput!));
         return Ok(result);

@@ -116,7 +116,7 @@ public class ModelInputAggregatorService(IMongoClient _client, IHttpClientFactor
     }
 
 
-    public async Task<OHLCVResult> GetOHLCVAsync()
+    public async Task<OHLCVResult> GetOHLCVAsync(string symbol)
     {
         // it is 14 seconds behind the current utc
         var start_time =  new DateTimeOffset( DateTime.UtcNow.AddSeconds(-14)).ToUnixTimeMilliseconds();
@@ -124,7 +124,7 @@ public class ModelInputAggregatorService(IMongoClient _client, IHttpClientFactor
         var collection = _client.GetDatabase("xtreamly").GetCollection<BsonDocument>("CEX_Raw_Trade");
         
         var timestampFilter = Builders<BsonDocument>.Filter.Gt("timestamp", start_time);
-        var symbolFilter = Builders<BsonDocument>.Filter.Eq("symbol", "ETH-USDT");
+        var symbolFilter = Builders<BsonDocument>.Filter.Eq("symbol", symbol);
         var combinedFilter = Builders<BsonDocument>.Filter.And(timestampFilter, symbolFilter);
 
         var trades = await collection.Find(combinedFilter).ToListAsync();

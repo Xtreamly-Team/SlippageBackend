@@ -6,7 +6,7 @@ namespace SlippageBackend.Services;
 
 public class ModelCommunicationService ( IMongoClient  _client , IHttpClientFactory _httpClientFactory)
 {
- public async Task<ModelOutput?> ExecuteInference(ModelInput input)
+ public async Task<ModelOutput?> ExecuteInference(ModelInput input, string symbol)
  {
      try
      {
@@ -22,7 +22,7 @@ public class ModelCommunicationService ( IMongoClient  _client , IHttpClientFact
          var httpContent = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
  
          // Send POST request with authorization header
-         var result = await client.PostAsync(Consts.Consts.MODEL_URL, httpContent);
+         var result = await client.PostAsync(Consts.Consts.MODEL_URL + symbol, httpContent);
  
          if (!result.IsSuccessStatusCode)
          {
