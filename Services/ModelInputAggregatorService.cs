@@ -20,6 +20,7 @@ public class ModelInputAggregatorService(IMongoClient _client, IHttpClientFactor
             .Sort(sort)
             .FirstOrDefault();
         if (lpReport == null) throw new Exception("No LP info found");
+        logger.LogInformation( "liquidity: {liquidity}", lpReport["liquidity"].AsString);
         return double.Parse(lpReport["liquidity"].AsString);
     }
 
@@ -32,6 +33,7 @@ public class ModelInputAggregatorService(IMongoClient _client, IHttpClientFactor
             .Sort(sort)
             .FirstOrDefault();
         if (lpReport == null) throw new Exception("No LP info found");
+        logger.LogInformation( "tvl token0: {tvlToken0}", lpReport["ValueLockedToken0"].AsDouble);
         return lpReport["ValueLockedToken0"].AsDouble;
     }
 
@@ -45,6 +47,7 @@ public class ModelInputAggregatorService(IMongoClient _client, IHttpClientFactor
             .Sort(sort)
             .FirstOrDefault();
         if (lpReport == null) throw new Exception("No LP info found");
+        return double.Parse(lpReport["ValueLockedToken1"].ToString()!);
         return  double.Parse(lpReport["ValueLockedToken1"]!.ToString()!) ;
     }
 
@@ -57,6 +60,7 @@ public class ModelInputAggregatorService(IMongoClient _client, IHttpClientFactor
             .Sort(sort)
             .FirstOrDefault();
         if (lpReport == null) throw new Exception("No LP info found");
+        logger.LogInformation("tvl usd: {tvlUsd}", lpReport["totalValueLockedInTermOfUSD"].ToString());
         return  double.Parse(lpReport["totalValueLockedInTermOfToken1"]!.ToString()!) ;
     }
 
@@ -70,6 +74,7 @@ public class ModelInputAggregatorService(IMongoClient _client, IHttpClientFactor
             .Sort(sort)
             .FirstOrDefault();
         if (qpReport == null) throw new Exception("No LP info found");
+        logger.LogInformation("quoted price: {quotedPrice}", qpReport["quotedPrice"].AsString);
         return double.Parse(qpReport["quotedPrice"].AsString);
     }
 
@@ -112,6 +117,7 @@ public class ModelInputAggregatorService(IMongoClient _client, IHttpClientFactor
             .Select(doc => Math.Abs(double.Parse(doc["Event"]["amount1Pure"].AsString)))
             .Sum();
 
+        logger.LogInformation("current volume: {currentVolume}", qpReport);
         return qpReport;
     }
 
