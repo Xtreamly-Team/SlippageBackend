@@ -108,7 +108,7 @@ public class ModelInputAggregatorService(IMongoClient _client, IHttpClientFactor
             .GetCollection<BsonDocument>("UNISWAP_REALTIME")
             .Find(filter)
             .ToList()
-            .Select(doc => Math.Abs(double.Parse(doc["Event"]["amount1Pure"].AsString)))
+            .Select(doc => Math.Abs(double.Parse(doc["Event"]["amount0Pure"].AsString)))
             .Sum();
 
         logger.LogInformation("current volume: {currentVolume}", qpReport);
