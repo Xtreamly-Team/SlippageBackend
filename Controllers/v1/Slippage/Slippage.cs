@@ -23,7 +23,7 @@ namespace SlippageBackend.Controllers.v1.Slippage
                 GasPrice = gasPrice,
                 IsBuy = isBuy,
                 LpFeeTier = feeTier,
-                QuotePrice = (decimal)await aggregatorService.GetQuotedPrice(poolAddress),
+                QuotePrice = (decimal)quotedPrice,
                 LpLiquidity = (decimal)await aggregatorService.GetLiquidity(poolAddress),
                 LpTvlToken0 = (decimal)await aggregatorService.GetlpTvlToken0(poolAddress),
                 LpTvlToken1 = (decimal)await aggregatorService.GetlpTvlToken1(poolAddress),
