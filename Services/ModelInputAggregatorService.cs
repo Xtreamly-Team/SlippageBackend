@@ -92,7 +92,7 @@ public class ModelInputAggregatorService(IMongoClient _client, IHttpClientFactor
             .Find(Builders<BsonDocument>.Filter.Empty)
             .Sort(Builders<BsonDocument>.Sort.Descending("Event.blockNumber"))
             .Limit(1)
-            .FirstOrDefault()?["Event"]["blockNumber"].AsInt64 ?? 0;
+            .FirstOrDefault()?["Event"]["blockNumber"].AsInt32 ?? 0;
 
         // Calculate the range for block numbers
         var startBlockNumber = Math.Max(0, maxBlockNumber - 50);
