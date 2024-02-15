@@ -47,7 +47,7 @@ public class ModelInputAggregatorService(IMongoClient _client, IHttpClientFactor
             .Sort(sort)
             .FirstOrDefault();
         if (lpReport == null) throw new Exception("No LP info found");
-        logger.LogInformation( "tvl token1: {tvlToken1}", lpReport["ValueLockedToken1"].AsDouble);
+        logger.LogInformation( "tvl token1: {tvlToken1}", lpReport["ValueLockedToken1"].ToString());
         return double.Parse(lpReport["ValueLockedToken1"].ToString()!);
 
     }
