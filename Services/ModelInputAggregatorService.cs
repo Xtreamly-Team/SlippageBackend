@@ -60,7 +60,7 @@ public class ModelInputAggregatorService(IMongoClient _client, IHttpClientFactor
             .Sort(sort)
             .FirstOrDefault();
         if (lpReport == null) throw new Exception("No LP info found");
-        logger.LogInformation("tvl usd: {tvlUsd}", lpReport["totalValueLockedInTermOfUSD"].ToString());
+        logger.LogInformation("tvl usd: {tvlUsd}", lpReport["totalValueLockedInTermOfToken1"].ToString());
         return  double.Parse(lpReport["totalValueLockedInTermOfToken1"]!.ToString()!) ;
     }
 
