@@ -38,6 +38,7 @@ public class Slippage(
         };
         var result = await _communicationService.ExecuteInference(modelInput);
         result!.Slippage = (result.ExecutionPrice / quotedPrice - 1) * 100;
+        _logger.LogInformation( System.Text.Json.JsonSerializer.Serialize(result!));
         return Ok(result);
     }
 }
