@@ -83,32 +83,30 @@ public class ModelInputAggregatorService(IMongoClient _client, IHttpClientFactor
 
     public async Task<double> GetCurrentVolume(string poolAddress)
     {
-        var todayStart = new DateTimeOffset(DateTime.UtcNow.Date).ToUnixTimeMilliseconds().ToString();
-    
         // Get the maximum block number
         var maxBlockNumber = _client
             .GetDatabase("xtreamly")
             .GetCollection<BsonDocument>("UNISWAP_REALTIME")
             .Find(Builders<BsonDocument>.Filter.Empty)
-            .Sort(Builders<BsonDocument>.Sort.Descending("Event.blockNumber"))
+            .Sort(Builders<BsonDocument>.Sort.Descending("Log.BlockNumber.Value"))
             .Limit(1)
-            .FirstOrDefault()?["Event"]["blockNumber"].AsInt32 ?? 0;
+            .FirstOrDefault()?["Log"]["BlockNumber"]["Value"].AsInt32 ?? 0;
 
         // Calculate the range for block numbers
         var startBlockNumber = Math.Max(0, maxBlockNumber - 50);
-    
+
+        
         var filter = Builders<BsonDocument>.Filter.And(
             Builders<BsonDocument>.Filter.Regex(e => e["Log"]["Address"].AsString,
                 new BsonRegularExpression($".*{poolAddress}.*", "i")),
-            Builders<BsonDocument>.Filter.Gte("Event.blockNumber", startBlockNumber),
-            Builders<BsonDocument>.Filter.Lte("Event.blockNumber", maxBlockNumber)
+            Builders<BsonDocument>.Filter.Gte("Log.BlockNumber.Value", startBlockNumber),
+            Builders<BsonDocument>.Filter.Lte("Log.BlockNumber.Value", maxBlockNumber)
         );
     
         var qpReport = _client
             .GetDatabase("xtreamly")
             .GetCollection<BsonDocument>("UNISWAP_REALTIME")
             .Find(filter)
-            .Sort(Builders<BsonDocument>.Sort.Ascending("Event.blockNumber"))
             .ToList()
             .Select(doc => Math.Abs(double.Parse(doc["Event"]["amount1Pure"].AsString)))
             .Sum();
