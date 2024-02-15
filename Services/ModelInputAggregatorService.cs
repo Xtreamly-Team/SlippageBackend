@@ -45,7 +45,7 @@ public class ModelInputAggregatorService(IMongoClient _client, IHttpClientFactor
             .Sort(sort)
             .FirstOrDefault();
         if (lpReport == null) throw new Exception("No LP info found");
-        return lpReport["ValueLockedToken1"].AsDouble;
+        return  double.Parse(lpReport["ValueLockedToken1"]!.ToString()!) ;
     }
 
     public async Task<double> GetlpTvlUSD(string poolAddress)
@@ -57,7 +57,7 @@ public class ModelInputAggregatorService(IMongoClient _client, IHttpClientFactor
             .Sort(sort)
             .FirstOrDefault();
         if (lpReport == null) throw new Exception("No LP info found");
-        return lpReport["totalValueLockedInTermOfToken1"].AsDouble;
+        return  double.Parse(lpReport["totalValueLockedInTermOfToken1"]!.ToString()!) ;
     }
 
 
