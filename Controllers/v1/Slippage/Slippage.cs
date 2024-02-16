@@ -35,10 +35,11 @@ public class Slippage(
             High14s = cexData.High,
             Low14s = cexData.Low,
             Open14S = cexData.Open,
-            Volume14s = cexData.Volume
+            Volume14s = cexData.Volume,
+            Ma50 = (decimal)await aggregatorService.GetMa50(symbol),
+            Ma100 = (decimal) await aggregatorService.GetMa100(symbol)
         };
         var result = await _communicationService.ExecuteInference(modelInput, symbol);
-        result!.Slippage = (result.ExecutionPrice / quotedPrice - 1) * 100;
         _logger.LogInformation( System.Text.Json.JsonSerializer.Serialize(modelInput!));
         return Ok(result);
     }

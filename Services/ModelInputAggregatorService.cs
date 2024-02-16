@@ -152,4 +152,34 @@ public class ModelInputAggregatorService(IMongoClient _client, IHttpClientFactor
         logger.LogInformation($"Open: {open_price}, High: {high_price}, Low: {low_price}, Close: {close_price}, Volume: {total_volume}");
         return new OHLCVResult(open_price.Value, high_price, low_price, close_price, total_volume);
     }
+
+    public async Task<double> GetMa50(string symbol)
+    {
+        var symbolFilter = Builders<BsonDocument>.Filter.Eq("symbol", symbol);
+        var last50Trades = _client
+            .GetDatabase("xtreamly")
+            .GetCollection<BsonDocument>("CEX_Raw_Trade")
+            .Find(symbolFilter)
+            .Sort(Builders<BsonDocument>.Sort.Descending("timestamp"))
+            .Limit(50)
+            .ToList()
+            .Select(doc => double.Parse(doc["price"].ToString()!))
+            .Average();
+        return last50Trades;
+    }
+    public async Task<double> GetMa100(string symbol)
+    {
+        var symbolFilter = Builders<BsonDocument>.Filter.Eq("symbol", symbol);
+        var last50Trades = _client
+            .GetDatabase("xtreamly")
+            .GetCollection<BsonDocument>("CEX_Raw_Trade")
+            .Find(symbolFilter)
+            .Sort(Builders<BsonDocument>.Sort.Descending("timestamp"))
+            .Limit(100)
+            .ToList()
+            .Select(doc => double.Parse(doc["price"].ToString()!))
+            .Average();
+        return last50Trades;
+    }
+    
 }

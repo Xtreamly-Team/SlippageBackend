@@ -31,7 +31,7 @@ namespace SlippageBackend.Models
         [JsonPropertyName("lp_tvlUSD")]
         public decimal LpTvlUsd { get; set; }
 
-        [JsonPropertyName("lp_volumeUSD")]
+        [JsonPropertyName("lp_Volume50")]
         public decimal LpVolumeUsd { get; set; }
 
         [JsonPropertyName("open14s")]
@@ -48,6 +48,12 @@ namespace SlippageBackend.Models
         
         [JsonPropertyName("volume14s")]
         public decimal Volume14s { get; set; }
+        
+        [JsonPropertyName("ma50")]
+        public decimal Ma50 { get; set; }
+        
+        [JsonPropertyName("ma100")]
+        public decimal Ma100 { get; set; }
         
         
         
