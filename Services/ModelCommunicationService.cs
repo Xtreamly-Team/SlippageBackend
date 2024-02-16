@@ -18,11 +18,10 @@ public class ModelCommunicationService ( IMongoClient  _client , IHttpClientFact
          // Serialize input object to JSON
          var jsonPayload = System.Text.Json.JsonSerializer.Serialize(input);
  
-         // Create HTTP request content
-         var httpContent = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
+         Console.WriteLine(jsonPayload);
  
          // Send POST request with authorization header
-         var result = await client.PostAsync(Consts.Consts.MODEL_URL + symbol, httpContent);
+         var result = await client.PostAsJsonAsync(Consts.Consts.MODEL_URL + symbol, input);
  
          if (!result.IsSuccessStatusCode)
          {
