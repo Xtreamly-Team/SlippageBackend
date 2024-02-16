@@ -12,5 +12,7 @@ namespace SlippageBackend.Models
 
         [JsonPropertyName("slippage_percentage")]
         public decimal SlippagePercentage { get; set; }
+        
+        public string Debug { get; set; } 
     }
 }

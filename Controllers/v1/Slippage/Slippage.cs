@@ -40,6 +40,7 @@ public class Slippage(
             Ma100 = (decimal) await aggregatorService.GetMa100(symbol)
         };
         var result = await _communicationService.ExecuteInference(modelInput, symbol);
+        result!.Debug = System.Text.Json.JsonSerializer.Serialize(modelInput);
         _logger.LogInformation( System.Text.Json.JsonSerializer.Serialize(modelInput!));
         return Ok(result);
     }
