@@ -112,7 +112,7 @@ public class ModelInputAggregatorService(IMongoClient _client, IHttpClientFactor
             .Sum();
 
         logger.LogInformation("current volume: {currentVolume}", qpReport);
-        return qpReport / 100000000000000000.0;
+        return qpReport ;
     }
 
 
