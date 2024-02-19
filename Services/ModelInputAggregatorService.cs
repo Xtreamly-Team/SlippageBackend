@@ -81,7 +81,7 @@ public class ModelInputAggregatorService(IMongoClient _client, IHttpClientFactor
     
    
 
-    public async Task<double> GetCurrentVolume(string poolAddress)
+    public async Task<double> GetCurrentVolume(string poolAddress, string symbol)
     {
         // Get the maximum block number
         var maxBlockNumber = _client
@@ -102,17 +102,31 @@ public class ModelInputAggregatorService(IMongoClient _client, IHttpClientFactor
             Builders<BsonDocument>.Filter.Gte("Log.BlockNumber.Value", startBlockNumber),
             Builders<BsonDocument>.Filter.Lte("Log.BlockNumber.Value", maxBlockNumber)
         );
-    
-        var qpReport = _client
-            .GetDatabase("xtreamly")
-            .GetCollection<BsonDocument>("UNISWAP_REALTIME")
-            .Find(filter)
-            .ToList()
-            .Select(doc => Math.Abs(double.Parse(doc["Event"]["amount0Pure"].AsString)))
-            .Sum();
+        if (symbol.Contains("USDT"))
+        {
+            var qpReport = _client
+                .GetDatabase("xtreamly")
+                .GetCollection<BsonDocument>("UNISWAP_REALTIME")
+                .Find(filter)
+                .ToList()
+                .Select(doc => Math.Abs(double.Parse(doc["Event"]["amount1Pure"].AsString)))
+                .Sum() / 1000000;
+            logger.LogInformation("current volume: {currentVolume}", qpReport);
+            return qpReport ;
+        }else if (symbol.Contains("USDC"))
+        {
+            var qpReport = _client
+                .GetDatabase("xtreamly")
+                .GetCollection<BsonDocument>("UNISWAP_REALTIME")
+                .Find(filter)
+                .ToList()
+                .Select(doc => Math.Abs(double.Parse(doc["Event"]["amount0Pure"].AsString)))
+                .Sum() / 1000000;
+            logger.LogInformation("current volume: {currentVolume}", qpReport);
+            return qpReport ;
+        }
 
-        logger.LogInformation("current volume: {currentVolume}", qpReport);
-        return qpReport ;
+        return 0;
     }
 
 
@@ -128,6 +142,20 @@ public class ModelInputAggregatorService(IMongoClient _client, IHttpClientFactor
         var combinedFilter = Builders<BsonDocument>.Filter.And(timestampFilter, symbolFilter);
 
         var trades = await collection.Find(combinedFilter).ToListAsync();
+        if (trades.Count == 0)
+        {
+            var lastTrade = _client
+                .GetDatabase("xtreamly")
+                .GetCollection<BsonDocument>("CEX_Raw_Trade")
+                .Find(symbolFilter)
+                .Sort(Builders<BsonDocument>.Sort.Descending("timestamp"))
+                .Limit(1)
+                .FirstOrDefault()["price"];
+
+            var lastTradePrice = decimal.Parse(lastTrade.ToString());
+            return new OHLCVResult(lastTradePrice,lastTradePrice,lastTradePrice, lastTradePrice,lastTradePrice);
+        }
+        
         decimal? open_price = null;
         var high_price = decimal.MinValue;
         var low_price = decimal.MaxValue;

@@ -30,7 +30,7 @@ public class Slippage(
             LpTvlToken0 = (decimal)await aggregatorService.GetlpTvlToken0(poolAddress),
             LpTvlToken1 = (decimal)await aggregatorService.GetlpTvlToken1(poolAddress),
             LpTvlUsd = (decimal)await aggregatorService.GetlpTvlUSD(poolAddress),
-            LpVolumeUsd = (decimal)await aggregatorService.GetCurrentVolume(poolAddress),
+            LpVolumeUsd = (decimal)await aggregatorService.GetCurrentVolume(poolAddress, symbol),
             Close14s = cexData.Close,
             High14s = cexData.High,
             Low14s = cexData.Low,

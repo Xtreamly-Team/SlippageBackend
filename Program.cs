@@ -41,7 +41,7 @@ builder.Services
 builder.Services.AddAuthorization();
 builder.Services.AddSingleton<IMongoClient>(_ =>
 {
-    var settings = MongoClientSettings.FromUrl(new MongoUrl("mongodb://xtreamly:Xtreamly2024!@maindb.cx0ga28wcrz0.eu-west-2.docdb.amazonaws.com:27017/?tls=true&tlsCAFile=global-bundle.pem&retryWrites=false"));
+    var settings = MongoClientSettings.FromUrl(new MongoUrl("mongodb://root:xtreamly@db.xtreamly.io:27017/"));
     settings.AllowInsecureTls = true;
     return  new MongoClient(settings);
 });
